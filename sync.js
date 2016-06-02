@@ -16,6 +16,11 @@ var setopts = common.setopts
 var ownProp = common.ownProp
 var childrenIgnored = common.childrenIgnored
 
+function isFunction(functionToCheck) {
+ var getType = {}
+ return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]'
+}
+
 function globSync (pattern, options, cb) {
   return new GlobSync(pattern, options, cb).found
 }
@@ -23,6 +28,11 @@ function globSync (pattern, options, cb) {
 function GlobSync (pattern, options, cb) {
   if (!pattern)
     throw new Error('must provide pattern')
+
+  if(isFunction(options)) {
+    cb = options
+    options = undefined
+  }
 
   if (!(this instanceof GlobSync))
     return new GlobSync(pattern, options, cb)
@@ -60,8 +70,7 @@ GlobSync.prototype._finish = function (cb) {
       }
     })
   }
-  common.finish(this)
-  cb(null, this.matches)
+  common.finish(this, cb)
 }
 
 

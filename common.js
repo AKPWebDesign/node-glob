@@ -114,7 +114,7 @@ function setopts (self, pattern, options) {
   self.options = self.minimatch.options
 }
 
-function finish (self) {
+function finish (self, cb) {
   var nou = self.nounique
   var all = nou ? [] : Object.create(null)
 
@@ -169,6 +169,8 @@ function finish (self) {
     })
 
   self.found = all
+
+  cb(null, all)
 }
 
 function mark (self, p) {
