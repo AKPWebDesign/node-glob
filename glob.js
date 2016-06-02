@@ -66,9 +66,7 @@ function glob (pattern, options, cb) {
   if (!options) options = {}
 
   if (options.sync) {
-    if (cb)
-      throw new TypeError('callback provided to sync glob')
-    return globSync(pattern, options)
+    return globSync(pattern, options, cb)
   }
 
   return new Glob(pattern, options, cb)
@@ -119,9 +117,7 @@ function Glob (pattern, options, cb) {
   }
 
   if (options && options.sync) {
-    if (cb)
-      throw new TypeError('callback provided to sync glob')
-    return new GlobSync(pattern, options)
+    return new GlobSync(pattern, options, cb)
   }
 
   if (!(this instanceof Glob))

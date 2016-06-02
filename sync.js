@@ -16,24 +16,16 @@ var setopts = common.setopts
 var ownProp = common.ownProp
 var childrenIgnored = common.childrenIgnored
 
-function globSync (pattern, options) {
-  if (typeof options === 'function' || arguments.length === 3)
-    throw new TypeError('callback provided to sync glob\n'+
-                        'See: https://github.com/isaacs/node-glob/issues/167')
-
-  return new GlobSync(pattern, options).found
+function globSync (pattern, options, cb) {
+  return new GlobSync(pattern, options, cb).found
 }
 
 function GlobSync (pattern, options) {
   if (!pattern)
     throw new Error('must provide pattern')
 
-  if (typeof options === 'function' || arguments.length === 3)
-    throw new TypeError('callback provided to sync glob\n'+
-                        'See: https://github.com/isaacs/node-glob/issues/167')
-
   if (!(this instanceof GlobSync))
-    return new GlobSync(pattern, options)
+    return new GlobSync(pattern, options, cb)
 
   setopts(this, pattern, options)
 
@@ -45,10 +37,10 @@ function GlobSync (pattern, options) {
   for (var i = 0; i < n; i ++) {
     this._process(this.minimatch.set[i], i, false)
   }
-  this._finish()
+  this._finish(cb)
 }
 
-GlobSync.prototype._finish = function () {
+GlobSync.prototype._finish = function (cb) {
   assert(this instanceof GlobSync)
   if (this.realpath) {
     var self = this
@@ -69,6 +61,7 @@ GlobSync.prototype._finish = function () {
     })
   }
   common.finish(this)
+  cb(null, this.matches)
 }
 
 
