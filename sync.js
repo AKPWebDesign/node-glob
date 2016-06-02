@@ -20,7 +20,7 @@ function globSync (pattern, options, cb) {
   return new GlobSync(pattern, options, cb).found
 }
 
-function GlobSync (pattern, options) {
+function GlobSync (pattern, options, cb) {
   if (!pattern)
     throw new Error('must provide pattern')
 
